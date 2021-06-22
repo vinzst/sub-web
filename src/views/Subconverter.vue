@@ -4,7 +4,7 @@
       <el-col>
         <el-card>
           <div slot="header">
-            订阅转换
+            小可爱
             <svg-icon icon-class="github" style="margin-left: 20px" @click="goToProject" />
             <svg-icon icon-class="telegram" style="margin-left: 20px" @click="gotoTgChannel" />
 
@@ -255,21 +255,10 @@ export default {
           "自动判断客户端": "auto",
         },
         customBackend: {
-          "localhost:25500 本地版": "http://localhost:25500/sub?",
-          "sub-beta.vercel.app": "https://sub-beta.vercel.app/sub?",
-          "subcon.dlj.tf(subconverter作者提供-稳定)":
-            "https://subcon.dlj.tf/sub?",
-          "api.dler.io(sub作者&lhie1提供-稳定)": "https://api.dler.io/sub?",
-          "api.wcc.best(sub-web作者提供-稳定)": "https://api.wcc.best/sub?",
-          "sub.id9.cc(品云转换)": "https://sub.id9.cc/sub?",
+          "run": "https://sub.886600.xyz/sub?",
         },
         backendOptions: [
-          { value: "http://localhost:25500/sub?" },
-          { value: "https://sub-beta.now.sh/sub?" },
-          { value: "https://subcon.dlj.tf/sub?" },
-          { value: "https://api.dler.io/sub?" },
-          { value: "https://api.wcc.best/sub?" },
-          { value: "https://sub.id9.cc/sub?" },
+          { value: "https://sub.886600.xyz/sub?" },
         ],
         remoteConfig: [
           {
@@ -282,20 +271,20 @@ export default {
             ]
           },
           {
-            label: "ACL4SSR",
+            label: "Run",
             options: [
               {
-                label: "ACL4SSR_Online 默认版 分组比较全(与Github同步)",
+                label: "神机自动",
                 value:
                   "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online.ini"
               },
               {
-                label: "ACL4SSR_Online_AdblockPlus 更多去广告(与Github同步)",
+                label: "神机手动",
                 value:
                   "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_AdblockPlus.ini"
               },
               {
-                label: "ACL4SSR_Online_NoAuto 无自动测速(与Github同步)",
+                label: "ACL自动",
                 value:
                   "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_NoAuto.ini"
               },
@@ -490,7 +479,7 @@ export default {
         remoteConfig: "",
         excludeRemarks: "",
         includeRemarks: "",
-        filename: "",
+        filename: "runrun",
         emoji: true,
         nodeList: false,
         extraset: false,
@@ -499,9 +488,9 @@ export default {
         tfo: false,
         scv: false,
         expand: true, // 是否将规则全文写进配置文件
-        fdn: false,
+        fdn: ture,
         appendType: false,
-        insert: false, // 是否插入默认订阅的节点，对应配置项 insert_url
+        insert: ture, // 是否插入默认订阅的节点，对应配置项 insert_url
         new_name: true, // 是否使用 Clash 新字段
       },
 
@@ -552,9 +541,9 @@ export default {
     }
   },
   mounted() {
-    this.form.clientType = "clash";
-    this.form.customBackend = defaultBackend;
-    this.form.remoteConfig = "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online.ini";
+    this.form.clientType = "clash&new_name=true";
+    this.form.customBackend = "https://sub.886600.xyz/sub?";
+    this.form.remoteConfig = "https://raw.githubusercontent.com/vinzst/mess/main/rule.ini";
     this.getBackendVersion();
   },
   methods: {
