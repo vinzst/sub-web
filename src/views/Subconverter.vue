@@ -11,7 +11,7 @@
             <div style="display: inline-block; position:absolute; right: 20px">{{ backendVersion }}</div>
           </div>
           <el-container>
-            <el-form :model="form" label-width="80px" label-position="left" style="width: 100%">
+            <el-form :model="form" label-width="120px" label-position="left" style="width: 100%">
               <el-form-item label="模式设置:">
                 <el-radio v-model="advanced" label="1">基础模式</el-radio>
                 <el-radio v-model="advanced" label="2">进阶模式</el-radio>
@@ -21,11 +21,11 @@
                   v-model="form.sourceSubUrl"
                   type="textarea"
                   rows="3"
-                  placeholder="支持订阅或ss/ssr/vmess链接，多个链接每行一个或用 | 分隔"
+                  placeholder="支持订阅或ss/ssr/vmess单链接。多个链接请每行一个或用 | 分隔"
                   @blur="saveSubUrl"
                 />
               </el-form-item>
-              <el-form-item label="生成类型:">
+              <el-form-item label="客户端:">
                 <el-select v-model="form.clientType" style="width: 100%">
                   <el-option v-for="(v, k) in options.clientTypes" :key="k" :label="k" :value="v"></el-option>
                 </el-select>
@@ -88,23 +88,37 @@
                       <el-checkbox v-model="form.nodeList" label="输出为 Node List" border></el-checkbox>
                     </el-col>
                     <el-popover placement="bottom" v-model="form.extraset">
-                      <el-row :gutter="10">
-                        <el-col :span="12"><el-checkbox v-model="form.emoji" label="Emoji"></el-checkbox></el-col>
-                        <el-col :span="12"><el-checkbox v-model="form.new_name" label="Clash新字段名"></el-checkbox></el-col>                        
+                      <el-row>
+                        <el-checkbox v-model="form.emoji" label="Emoji"></el-checkbox>
                       </el-row>
-                      <el-row :gutter="10">
-                        <el-col :span="12"><el-checkbox v-model="form.udp" @change="needUdp = true" label="启用 UDP"></el-checkbox></el-col>
-                        <el-col :span="12"><el-checkbox v-model="form.tfo" label="启用 TFO"></el-checkbox></el-col>                        
+                      <el-row>
+                        <el-checkbox v-model="form.new_name" label="Clash New Field"></el-checkbox>
                       </el-row>
-                      <el-row :gutter="10">
-                        <el-col :span="12"><el-checkbox v-model="form.appendType" label="插入节点类型"></el-checkbox></el-col>
-                        <el-col :span="12"><el-checkbox v-model="form.sort" label="排序节点"></el-checkbox></el-col>                        
+                      <el-row>
+                        <el-checkbox v-model="form.udp" label="启用 UDP"></el-checkbox>
                       </el-row>
-                      <el-row :gutter="10">
-                        <el-col :span="12"><el-checkbox v-model="form.fdn" label="过滤不支持节点"></el-checkbox></el-col>
-                        <el-col :span="12"><el-checkbox v-model="form.expand" label="展开规则全文"></el-checkbox></el-col>                        
+                      <el-row>
+                        <el-checkbox v-model="form.appendType" label="节点类型"></el-checkbox>
+                      </el-row>
+                      <el-row>
+                        <el-checkbox v-model="form.sort" label="排序节点"></el-checkbox>
+                      </el-row>
+                      <el-row>
+                        <el-checkbox v-model="form.fdn" label="过滤非法节点"></el-checkbox>
                       </el-row>
                       <el-button slot="reference">更多选项</el-button>
+                    </el-popover>
+                    <el-popover placement="bottom" style="margin-left: 10px">
+                      <el-row>
+                        <el-checkbox v-model="form.tpl.surge.doh" label="Surge.DoH"></el-checkbox>
+                      </el-row>
+                      <el-row>
+                        <el-checkbox v-model="form.tpl.clash.doh" label="Clash.DoH"></el-checkbox>
+                      </el-row>
+                      <el-row>
+                        <el-checkbox v-model="form.insert" label="网易云"></el-checkbox>
+                      </el-row>
+                      <el-button slot="reference">定制功能</el-button>
                     </el-popover>
                   </el-row>
                 </el-form-item>
@@ -127,7 +141,7 @@
                   >复制</el-button>
                 </el-input>
               </el-form-item>
-              <el-form-item label="订阅短链:">
+              <el-form-item label="订阅短链接:">
                 <el-input class="copy-content" disabled v-model="curtomShortSubUrl">
                   <el-button
                     slot="append"
@@ -235,24 +249,21 @@ export default {
 
       options: {
         clientTypes: {
+          "Clash新参数": "clash&new_name=true",
+          v2ray: "v2ray",
+          ssr: "ssr",
+          ss: "ss",
+          "ClashR新参数": "clashr&new_name=true",
           Clash: "clash",
           ClashR: "clashr",
           Surge2: "surge&ver=2",
           Surge3: "surge&ver=3",
           Surge4: "surge&ver=4",
           Quantumult: "quan",
-          "Quantumult X": "quanx",
-          Loon: "loon",
-          Mellow: "mellow",
+          QuantumultX: "quanx",
           Surfboard: "surfboard",
-          "Shadowsocks(SIP002)": "ss",
-          "Shadowsocks Android(SIP008)": "sssub",
-          ShadowsocksR: "ssr",
-          ShadowsocksD: "ssd",          
-          V2Ray: "v2ray",
-          Trojan: "trojan",
-          "混合订阅（mixed）": "mixed",
-          "自动判断客户端": "auto",
+          Loon: "loon",
+          ssd: "ssd"
         },
         customBackend: {
           "run": "https://sub.886600.xyz/sub?",
@@ -265,29 +276,24 @@ export default {
             label: "默认",
             options: [
               {
-                label: "不选，由接口提供方提供",
+                label: "不选,由接口提供方提供",
                 value: ""
               }
             ]
           },
           {
-            label: "Run",
+            label: "run",
             options: [
               {
                 label: "神机自动",
                 value:
-                  "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online.ini"
+                  "https://raw.githubusercontent.com/vinzst/mess/main/rule.ini"
               },
               {
-                label: "神机手动",
+                label: "V2Pro",
                 value:
-                  "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_AdblockPlus.ini"
+                  "https://raw.githubusercontent.com/Mazeorz/airports/master/Clash/V2Pro.ini"
               },
-              {
-                label: "ACL自动",
-                value:
-                  "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_NoAuto.ini"
-              }
             ]
           },
           {
@@ -296,12 +302,12 @@ export default {
               {
                 label: "No-Urltest",
                 value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/universal/no-urltest.ini"
+                  "https://subconverter.oss-ap-southeast-1.aliyuncs.com/Rules/RemoteConfig/universal/no-urltest.ini"
               },
               {
                 label: "Urltest",
                 value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/universal/urltest.ini"
+                  "https://subconverter.oss-ap-southeast-1.aliyuncs.com/Rules/RemoteConfig/universal/urltest.ini"
               }
             ]
           },
@@ -311,42 +317,57 @@ export default {
               {
                 label: "Maying",
                 value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/maying.ini"
+                  "https://subconverter.oss-ap-southeast-1.aliyuncs.com/Rules/RemoteConfig/customized/maying.ini"
+              },
+              {
+                label: "rixCloud",
+                value:
+                  "https://subconverter.oss-ap-southeast-1.aliyuncs.com/Rules/RemoteConfig/customized/rixcloud.ini"
+              },
+              {
+                label: "Nirvana",
+                value:
+                  "https://raw.githubusercontent.com/Mazetsz/ACL4SSR/master/Clash/config/V2rayPro.ini"
+              },
+              {
+                label: "V2Pro",
+                value:
+                  "https://raw.githubusercontent.com/Mazeorz/airports/master/Clash/V2Pro.ini"
+              },
+              {
+                label: "YoYu",
+                value:
+                  "https://subconverter.oss-ap-southeast-1.aliyuncs.com/Rules/RemoteConfig/customized/yoyu.ini"
               },
               {
                 label: "Ytoo",
                 value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/ytoo.ini"
-              },
-              {
-                label: "FlowerCloud",
-                value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/flowercloud.ini"
+                  "https://subconverter.oss-ap-southeast-1.aliyuncs.com/Rules/RemoteConfig/customized/ytoo.ini"
               },
               {
                 label: "NyanCAT",
                 value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/nyancat.ini"
+                  "https://subconverter.oss-ap-southeast-1.aliyuncs.com/Rules/RemoteConfig/customized/nyancat.ini"
               },
               {
                 label: "Nexitally",
                 value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/nexitally.ini"
+                  "https://subconverter.oss-ap-southeast-1.aliyuncs.com/Rules/RemoteConfig/customized/nexitally.ini"
               },
               {
                 label: "SoCloud",
                 value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/socloud.ini"
+                  "https://subconverter.oss-ap-southeast-1.aliyuncs.com/Rules/RemoteConfig/customized/socloud.ini"
               },
               {
                 label: "ARK",
                 value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/ark.ini"
+                  "https://subconverter.oss-ap-southeast-1.aliyuncs.com/Rules/RemoteConfig/customized/ark.ini"
               },
               {
                 label: "ssrCloud",
                 value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/ssrcloud.ini"
+                  "https://subconverter.oss-ap-southeast-1.aliyuncs.com/Rules/RemoteConfig/customized/ssrcloud.ini"
               }
             ]
           },
@@ -356,12 +377,12 @@ export default {
               {
                 label: "NeteaseUnblock(仅规则，No-Urltest)",
                 value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/special/netease.ini"
+                  "https://subconverter.oss-ap-southeast-1.aliyuncs.com/Rules/RemoteConfig/special/netease.ini"
               },
               {
                 label: "Basic(仅GEOIP CN + Final)",
                 value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/special/basic.ini"
+                  "https://subconverter.oss-ap-southeast-1.aliyuncs.com/Rules/RemoteConfig/special/basic.ini"
               }
             ]
           }
@@ -382,11 +403,20 @@ export default {
         udp: false,
         tfo: false,
         scv: false,
-        expand: true, // 是否将规则全文写进配置文件
         fdn: true,
         appendType: false,
         insert: true, // 是否插入默认订阅的节点，对应配置项 insert_url
         new_name: true, // 是否使用 Clash 新字段
+
+        // tpl 定制功能
+        tpl: {
+          surge: {
+            doh: false // dns 查询是否使用 DoH
+          },
+          clash: {
+            doh: false
+          }
+        }
       },
 
       loading: false,
@@ -397,9 +427,7 @@ export default {
       uploadConfig: "",
       uploadPassword: "",
       myBot: tgBotLink,
-      sampleConfig: remoteConfigSample,
-
-      needUdp: false, // 是否需要添加 udp 参数
+      sampleConfig: remoteConfigSample
     };
 
     // window.console.log(data.options.remoteConfig);
@@ -549,6 +577,8 @@ export default {
           this.form.emoji.toString() +
           "&list=" +
           this.form.nodeList.toString() +
+          "&udp=" +
+          this.form.udp.toString() +
           "&tfo=" +
           this.form.tfo.toString() +
           "&scv=" +
@@ -556,15 +586,17 @@ export default {
           "&fdn=" +
           this.form.fdn.toString() +
           "&sort=" +
-          this.form.sort.toString() +
-          "&expand=" +
-          this.form.expand.toString();
+          this.form.sort.toString();
 
-        if (this.needUdp) {
-          this.customSubUrl += "&udp=" + this.form.udp.toString()
+        if (this.form.tpl.surge.doh === true) {
+          this.customSubUrl += "&surge.doh=true";
         }
 
         if (this.form.clientType === "clash") {
+          if (this.form.tpl.clash.doh === true) {
+            this.customSubUrl += "&clash.doh=true";
+          }
+
           this.customSubUrl += "&new_name=" + this.form.new_name.toString();
         }
       }
@@ -685,16 +717,16 @@ export default {
       if (ls !== null) {
         let data = JSON.parse(ls)
         if (data.expire > now) {
-          itemValue = data.value
+          itemValue = data.value 
         } else {
           localStorage.removeItem(itemKey)
         }
       }
 
-      return itemValue
+      return itemValue 
     },
     setLocalStorageItem(itemKey, itemValue) {
-      const ttl = process.env.VUE_APP_CACHE_TTL
+      const ttl = process.env.VUE_APP_CACHE_TTL 
       const now = +new Date()
 
       let data = {
