@@ -285,14 +285,19 @@ export default {
             label: "run",
             options: [
               {
-                label: "神机自动",
+                label: "1",
                 value:
                   "https://raw.githubusercontent.com/vinzst/mess/main/rule.ini"
               },
               {
-                label: "V2Pro",
+                label: "2",
                 value:
-                  "https://raw.githubusercontent.com/Mazeorz/airports/master/Clash/V2Pro.ini"
+                  "https://raw.githubusercontent.com/vinzst/mess/main/rule2.ini"
+              },
+              {
+                label: "3",
+                value:
+                  "https://raw.githubusercontent.com/vinzst/mess/main/rule3.ini"
               },
             ]
           },
