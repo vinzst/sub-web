@@ -401,6 +401,7 @@ export default {
         excludeRemarks: "",
         includeRemarks: "",
         filename: "runrun",
+	group: "runrun",
         emoji: true,
         nodeList: false,
         extraset: false,
